@@ -3,32 +3,16 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 import { ArrowLeft, Share2, Check, AlertCircle, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import ShareDialog from "@/components/documents/ShareDialog";
+import DocumentRoom from "@/components/documents/DocumentRoom";
 
-/** Load collaborative editor client-side only to keep y-webrtc out of SSR */
 const CollaborativeEditor = dynamic(
   () => import("@/components/editor/CollaborativeEditor"),
   { ssr: false },
 );
-
-function deriveColor(seed: string): string {
-  const COLORS = [
-    "#4f46e5",
-    "#0891b2",
-    "#059669",
-    "#d97706",
-    "#dc2626",
-    "#7c3aed",
-    "#c026d3",
-  ];
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++)
-    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-  return COLORS[hash % COLORS.length];
-}
 
 interface ShareUser {
   id: string;
@@ -61,11 +45,6 @@ export default function DocumentView({
   permission,
   shares: initialShares,
 }: DocumentViewProps) {
-  const { user } = useUser();
-  const userColor = user?.id ? deriveColor(user.id) : "#6366f1";
-  const userName =
-    user?.fullName ?? user?.primaryEmailAddress?.emailAddress ?? "Anonymous";
-
   const [title, setTitle] = useState(initialTitle);
   const [editingTitle, setEditingTitle] = useState(false);
   const [saveStatus, setSaveStatus] = useState<
@@ -192,16 +171,16 @@ export default function DocumentView({
         <UserButton />
       </header>
 
-      {/* Editor */}
+      {/* Editor wrapped in Liveblocks room */}
       <div className="flex-1 overflow-y-auto">
-        <CollaborativeEditor
-          documentId={id}
-          initialContent={content}
-          editable={editable}
-          onSave={setSaveStatus}
-          userName={userName}
-          userColor={userColor}
-        />
+        <DocumentRoom documentId={id}>
+          <CollaborativeEditor
+            documentId={id}
+            initialContent={content}
+            editable={editable}
+            onSave={setSaveStatus}
+          />
+        </DocumentRoom>
       </div>
 
       {/* Share modal */}
