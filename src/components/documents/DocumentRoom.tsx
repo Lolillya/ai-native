@@ -8,12 +8,13 @@ interface DocumentRoomProps {
   children: ReactNode;
 }
 
-export default function DocumentRoom({ documentId, children }: DocumentRoomProps) {
+export default function DocumentRoom({
+  documentId,
+  children,
+}: DocumentRoomProps) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-      <RoomProvider id={`docflow-${documentId}`}>
-        {children}
-      </RoomProvider>
+      <RoomProvider id={`docflow-${documentId}`}>{children}</RoomProvider>
     </LiveblocksProvider>
   );
 }

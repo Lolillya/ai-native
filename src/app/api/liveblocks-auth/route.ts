@@ -18,7 +18,8 @@ export async function POST(request: Request) {
   const { room } = await request.json();
 
   // room id convention: "docflow-{documentId}"
-  const documentId = typeof room === "string" ? room.replace(/^docflow-/, "") : null;
+  const documentId =
+    typeof room === "string" ? room.replace(/^docflow-/, "") : null;
   if (!documentId) {
     return NextResponse.json({ error: "Invalid room" }, { status: 400 });
   }

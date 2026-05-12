@@ -88,7 +88,12 @@ export default function CollaborativeEditor({
 
   const onlineUsers = [
     ...(self
-      ? [{ name: (self.info?.name as string) ?? "You", color: (self.info?.color as string) ?? "#6366f1" }]
+      ? [
+          {
+            name: (self.info?.name as string) ?? "You",
+            color: (self.info?.color as string) ?? "#6366f1",
+          },
+        ]
       : []),
     ...others.map((o) => ({
       name: (o.info?.name as string) ?? "Anonymous",
@@ -134,4 +139,3 @@ export default function CollaborativeEditor({
     </div>
   );
 }
-
