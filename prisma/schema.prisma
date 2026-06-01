@@ -19,10 +19,11 @@ model User {
 }
 
 model Document {
-  id        String   @id @default(cuid())
-  title     String   @default("Untitled Document")
-  content   Json     @default("{}")
-  ownerId   String
+  id         String   @id @default(cuid())
+  title      String   @default("Untitled Document")
+  content    Json     @default("{}")
+  sourceFile String?  // S3 object key of the original uploaded file
+  ownerId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

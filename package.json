@@ -10,6 +10,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1057.0",
+    "@aws-sdk/s3-request-presigner": "^3.1057.0",
     "@clerk/nextjs": "^7.3.3",
     "@liveblocks/client": "^3.19.0",
     "@liveblocks/node": "^3.19.0",

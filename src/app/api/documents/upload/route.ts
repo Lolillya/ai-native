@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { uploadToS3 } from "@/lib/s3";
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_TYPES = ["text/plain", "text/markdown", "text/x-markdown"];
@@ -133,8 +134,12 @@ export async function POST(request: Request) {
     update: {},
   });
 
+  // Upload original file to S3
+  const s3Key = `uploads/${userId}/${Date.now()}-${fileName}`;
+  await uploadToS3(s3Key, Buffer.from(bytes), file.type || "text/plain");
+
   const doc = await prisma.document.create({
-    data: { title, content, ownerId: userId },
+    data: { title, content, ownerId: userId, sourceFile: s3Key },
   });
 
   return NextResponse.json({ id: doc.id, title: doc.title }, { status: 201 });
